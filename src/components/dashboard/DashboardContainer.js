@@ -1,13 +1,7 @@
 import React, { Component } from 'react'
 import { feature } from 'topojson-client'
+import TopoJSONComposableMap from '../../../src/components/maps/TopoJSONComposableMap';
 import map from '../../../src/assets/world-50m.json';
-
-import {
-  ComposableMap,
-  ZoomableGroup,
-  Geographies,
-  Geography,
-} from 'react-simple-maps';
 
 const wrapperStyles = {
   width: '100%',
@@ -20,21 +14,21 @@ class DashboardContainer extends Component {
   constructor() {
     super()
     this.state = {
-      geographyPaths: [],
+      unitedStatesPaths: [],
     }
     this.loadPaths = this.loadPaths.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
-    this.loadPaths()
+    this.loadPaths();
   }
 
   loadPaths() {
+    // transforms your json paths with topojson
     const world = map;
-    // Transform your paths with topojson however you want...
-    const countries = feature(world, world.objects[Object.keys(world.objects)[0]]).features
-    this.setState({ geographyPaths: countries })
+    const countries = feature(world, world.objects[Object.keys(world.objects)[0]]).features;
+    this.setState({ unitedStatesPaths: countries });
   }
 
   handleClick(e) {
@@ -42,57 +36,10 @@ class DashboardContainer extends Component {
   }
 
   render() {
+    console.log(this.state.unitedStatesPaths);
     return (
       <div style={wrapperStyles}>
-        <ComposableMap
-          projectionConfig={{
-            scale:1200,
-            rotation: [0,0,0],
-          }}
-          width={980}
-          height={551}
-          style={{
-            backgroundColor: '#000',
-            width: '75%',
-            height: 'auto',
-          }}
-          >
-            <ZoomableGroup center={[ -70, 388 ]} disablePanning>
-            <Geographies geography={this.state.geographyPaths} disableOptimization>
-              {(geographies, projection) =>
-                geographies.map((geography, i) =>
-                  geography.properties.admin === 'United States of America' && <Geography
-                    key={`${geography.properties.ADM0_A3}-${i}`}
-                    cacheId={`path-${geography.properties.ADM0_A3}-${i}`}
-                    round
-                    geography={geography}
-                    projection={projection}
-                    onClick={this.handleClick}
-                    style={{
-                      default: {
-                        fill: '#ECEFF1',
-                        stroke: '#607D8B',
-                        strokeWidth: 0.75,
-                        outline: 'none',
-                      },
-                      hover: {
-                        fill: '#607D8B',
-                        stroke: '#607D8B',
-                        strokeWidth: 0.75,
-                        outline: 'none',
-                      },
-                      pressed: {
-                        fill: '#FF5722',
-                        stroke: '#607D8B',
-                        strokeWidth: 0.75,
-                        outline: 'none',
-                      },
-                    }}
-                  />
-              )}
-            </Geographies>
-            </ZoomableGroup>
-        </ComposableMap>
+        <TopoJSONComposableMap geographyPaths={this.state.unitedStatesPaths} />
       </div>
     )
   }
