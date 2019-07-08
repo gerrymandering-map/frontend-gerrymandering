@@ -1,0 +1,1 @@
+// bug in webpack 4.12.0, will not compile w/o file here
