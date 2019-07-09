@@ -1,48 +1,51 @@
-import React, { Component } from 'react'
-import { feature } from 'topojson-client'
-import TopoJSONComposableMap from '../../../src/components/maps/TopoJSONComposableMap';
-import map from '../../../src/assets/world-50m.json';
+import React, { Component } from 'react';
 
-const wrapperStyles = {
-  width: '100%',
-  maxWidth: 980,
-  margin: '0 auto',
-  fontFamily: 'Roboto, sans-serif',
-}
+import Dashboard from './Dashboard';
+import StateDisplayModalContainer from '../state-display-modal/StateDisplayModalContainer';
+import Test from '../test/test';
+
+import unitedStatesMap from '../../public/world-50m.json';
 
 class DashboardContainer extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props);
     this.state = {
-      unitedStatesPaths: [],
-    }
-    this.loadPaths = this.loadPaths.bind(this);
-    this.handleClick = this.handleClick.bind(this);
+      selectedState: '',
+      selectedStateModalOpen: false,
+    };
+
+    this.openStateModal = this.openStateModal.bind(this);
+    this.closeStateModal = this.closeStateModal.bind(this);
+    this.selectState = this.selectState.bind(this);
   }
 
-  componentDidMount() {
-    this.loadPaths();
+  selectState(selectedState) {
+    this.setState({ selectedState }, () => this.openStateModal());
   }
 
-  loadPaths() {
-    // transforms your json paths with topojson
-    const world = map;
-    const countries = feature(world, world.objects[Object.keys(world.objects)[0]]).features;
-    this.setState({ unitedStatesPaths: countries });
+  openStateModal() {
+    this.setState({ selectedStateModalOpen: true });
   }
 
-  handleClick(e) {
-    console.log('event target', e.properties.gn_name);
+  closeStateModal() {
+    this.setState({ selectedStateModalOpen: false });
   }
 
   render() {
-    console.log(this.state.unitedStatesPaths);
     return (
-      <div style={wrapperStyles}>
-        <TopoJSONComposableMap geographyPaths={this.state.unitedStatesPaths} />
+      <div>
+        {unitedStatesMap && <Dashboard 
+          map={unitedStatesMap} 
+          selectState={this.selectState} />}
+        <StateDisplayModalContainer 
+          stateName={this.state.selectedState}
+          show={this.state.selectedStateModalOpen} 
+          handleClose={this.closeStateModal} />
+        <Test />
       </div>
-    )
+    );
   }
 }
+
 
 export default DashboardContainer;

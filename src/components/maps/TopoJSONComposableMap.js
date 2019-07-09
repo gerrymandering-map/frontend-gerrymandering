@@ -5,23 +5,20 @@ import {
   Geographies,
   Geography,
 } from 'react-simple-maps';
+import PropTypes from 'prop-types';
 
-const TopoJSONComposableMap = ( geographyPaths ) => (
+const TopoJSONComposableMap = ({ 
+  scale, style, center, disablePanning, paths, handleClick, svgStyle, 
+}) => (
   <ComposableMap
     projectionConfig={{
-      scale:1200,
-      rotation: [0,0,0],
+      scale,
+      rotation: [0, 0, 0],
     }}
-    width={980}
-    height={551}
-    style={{
-      backgroundColor: '#000',
-      width: '100%',
-      height: 'auto',
-    }}
+    style={style}
     >
-      <ZoomableGroup center={[ 0, 0 ]} >
-      <Geographies geographyPaths disableOptimization>
+    <ZoomableGroup center={center} disablePanning={disablePanning}>
+      <Geographies geography={paths} disableOptimization>
         {(geographies, projection) =>
           geographies.map((geography, i) =>
             geography.properties.admin === 'United States of America' && <Geography
@@ -30,32 +27,22 @@ const TopoJSONComposableMap = ( geographyPaths ) => (
               round
               geography={geography}
               projection={projection}
-              onClick={this.handleClick}
-              style={{
-                default: {
-                  fill: '#ECEFF1',
-                  stroke: '#607D8B',
-                  strokeWidth: 0.75,
-                  outline: 'none',
-                },
-                hover: {
-                  fill: '#607D8B',
-                  stroke: '#607D8B',
-                  strokeWidth: 0.75,
-                  outline: 'none',
-                },
-                pressed: {
-                  fill: '#FF5722',
-                  stroke: '#607D8B',
-                  strokeWidth: 0.75,
-                  outline: 'none',
-                },
-              }}
-            />
+              onClick={handleClick}
+              style={svgStyle} />,
         )}
       </Geographies>
-      </ZoomableGroup>
+    </ZoomableGroup>
   </ComposableMap>
 );
+
+TopoJSONComposableMap.propTypes = {
+  scale: PropTypes.number,
+  style: PropTypes.object,
+  center: PropTypes.array,
+  disablePanning: PropTypes.bool,
+  paths: PropTypes.array,
+  handleClick: PropTypes.func,
+  svgStyle: PropTypes.object,
+};
 
 export default TopoJSONComposableMap;
