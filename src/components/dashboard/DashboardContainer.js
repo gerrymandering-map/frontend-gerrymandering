@@ -1,101 +1,51 @@
-import React, { Component } from 'react'
-import { feature } from 'topojson-client'
-import map from '../../../src/assets/world-50m.json';
+import React, { Component } from 'react';
 
-import {
-  ComposableMap,
-  ZoomableGroup,
-  Geographies,
-  Geography,
-} from 'react-simple-maps';
+import Dashboard from './Dashboard';
+import StateDisplayModalContainer from '../state-display-modal/StateDisplayModalContainer';
+import Test from '../test/test';
 
-const wrapperStyles = {
-  width: '100%',
-  maxWidth: 980,
-  margin: '0 auto',
-  fontFamily: 'Roboto, sans-serif',
-}
+import unitedStatesMap from '../../public/world-50m.json';
 
 class DashboardContainer extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props);
     this.state = {
-      geographyPaths: [],
-    }
-    this.loadPaths = this.loadPaths.bind(this);
-    this.handleClick = this.handleClick.bind(this);
+      selectedState: '',
+      selectedStateModalOpen: false,
+    };
+
+    this.openStateModal = this.openStateModal.bind(this);
+    this.closeStateModal = this.closeStateModal.bind(this);
+    this.selectState = this.selectState.bind(this);
   }
 
-  componentDidMount() {
-    this.loadPaths()
+  selectState(selectedState) {
+    this.setState({ selectedState }, () => this.openStateModal());
   }
 
-  loadPaths() {
-    const world = map;
-    // Transform your paths with topojson however you want...
-    const countries = feature(world, world.objects[Object.keys(world.objects)[0]]).features
-    this.setState({ geographyPaths: countries })
+  openStateModal() {
+    this.setState({ selectedStateModalOpen: true });
   }
 
-  handleClick(e) {
-    console.log('event target', e.properties.gn_name);
+  closeStateModal() {
+    this.setState({ selectedStateModalOpen: false });
   }
 
   render() {
     return (
-      <div style={wrapperStyles}>
-        <ComposableMap
-          projectionConfig={{
-            scale:1200,
-            rotation: [0,0,0],
-          }}
-          width={980}
-          height={551}
-          style={{
-            backgroundColor: '#000',
-            width: '75%',
-            height: 'auto',
-          }}
-          >
-            <ZoomableGroup center={[ -70, 388 ]} disablePanning>
-            <Geographies geography={this.state.geographyPaths} disableOptimization>
-              {(geographies, projection) =>
-                geographies.map((geography, i) =>
-                  geography.properties.admin === 'United States of America' && <Geography
-                    key={`${geography.properties.ADM0_A3}-${i}`}
-                    cacheId={`path-${geography.properties.ADM0_A3}-${i}`}
-                    round
-                    geography={geography}
-                    projection={projection}
-                    onClick={this.handleClick}
-                    style={{
-                      default: {
-                        fill: '#ECEFF1',
-                        stroke: '#607D8B',
-                        strokeWidth: 0.75,
-                        outline: 'none',
-                      },
-                      hover: {
-                        fill: '#607D8B',
-                        stroke: '#607D8B',
-                        strokeWidth: 0.75,
-                        outline: 'none',
-                      },
-                      pressed: {
-                        fill: '#FF5722',
-                        stroke: '#607D8B',
-                        strokeWidth: 0.75,
-                        outline: 'none',
-                      },
-                    }}
-                  />
-              )}
-            </Geographies>
-            </ZoomableGroup>
-        </ComposableMap>
+      <div>
+        {unitedStatesMap && <Dashboard 
+          map={unitedStatesMap} 
+          selectState={this.selectState} />}
+        <StateDisplayModalContainer 
+          stateName={this.state.selectedState}
+          show={this.state.selectedStateModalOpen} 
+          handleClose={this.closeStateModal} />
+        <Test />
       </div>
-    )
+    );
   }
 }
+
 
 export default DashboardContainer;
