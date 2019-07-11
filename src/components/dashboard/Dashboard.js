@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import TopoJSONComposableMapContainer from '../maps/TopoJSONComposableMapContainer';
 
 const mainlandStyles = {
-  backgroundColor: '#000',
+  backgroundColor: '#FFF',
   width: '70%',
   height: 'auto',
 };
