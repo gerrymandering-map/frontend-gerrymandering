@@ -12,6 +12,10 @@ class StateDisplayModalContainer extends Component {
     };
   }
 
+  componentDidMount() {
+    
+  }
+
   render() {
     return (
       <StateDisplayModal

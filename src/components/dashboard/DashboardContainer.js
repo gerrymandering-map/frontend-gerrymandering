@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import Dashboard from './Dashboard';
 import StateDisplayModalContainer from '../state-display-modal/StateDisplayModalContainer';
-import Test from '../test/test';
 
 import unitedStatesMap from '../../public/world-50m.json';
 
@@ -41,7 +40,6 @@ class DashboardContainer extends Component {
           stateName={this.state.selectedState}
           show={this.state.selectedStateModalOpen} 
           handleClose={this.closeStateModal} />
-        <Test />
       </div>
     );
   }
